@@ -1,0 +1,170 @@
+[
+{
+    "model": "store.category",
+    "pk": 1,
+    "fields": {
+        "name": "Electric",
+        "slug": "electric"
+    }
+},
+{
+    "model": "store.category",
+    "pk": 2,
+    "fields": {
+        "name": "Household",
+        "slug": "household"
+    }
+},
+{
+    "model": "store.category",
+    "pk": 3,
+    "fields": {
+        "name": "wooden",
+        "slug": "wood"
+    }
+},
+{
+    "model": "store.product",
+    "pk": 1,
+    "fields": {
+        "category": 1,
+        "name": "Bulb",
+        "description": "Energy-Efficient LED Bulb With Bright Light",
+        "price": "20.00",
+        "image": "products/illuminated-idea-growth-stockcake.jpg",
+        "created_at": "2026-07-03T10:48:55.414Z"
+    }
+},
+{
+    "model": "store.product",
+    "pk": 2,
+    "fields": {
+        "category": 3,
+        "name": "Table",
+        "description": "Modern Wooden Table For Your Living Room",
+        "price": "100000.00",
+        "image": "products/images.jpeg",
+        "created_at": "2026-07-03T10:53:15.149Z"
+    }
+},
+{
+    "model": "store.product",
+    "pk": 4,
+    "fields": {
+        "category": 2,
+        "name": "OIL",
+        "description": "Premium Cooking Oil For Everyday Use",
+        "price": "500.00",
+        "image": "products/oil.avif",
+        "created_at": "2026-07-04T07:15:10.750Z"
+    }
+},
+{
+    "model": "store.product",
+    "pk": 5,
+    "fields": {
+        "category": 2,
+        "name": "Balls",
+        "description": "High-Quality Sports Balls For Training And Matches",
+        "price": "200.00",
+        "image": "products/images_1.jpeg",
+        "created_at": "2026-07-04T10:11:35.172Z"
+    }
+},
+{
+    "model": "store.product",
+    "pk": 6,
+    "fields": {
+        "category": 2,
+        "name": "Bottles",
+        "description": "Reusable BPA-Free Water Bottles",
+        "price": "300.00",
+        "image": "products/images_2.jpeg",
+        "created_at": "2026-07-04T10:13:46.052Z"
+    }
+},
+{
+    "model": "store.product",
+    "pk": 7,
+    "fields": {
+        "category": 1,
+        "name": "Iron",
+        "description": "Powerful Steam Iron For Wrinkle-Free Clothes",
+        "price": "900.00",
+        "image": "products/images_3.jpeg",
+        "created_at": "2026-07-04T10:14:23.367Z"
+    }
+},
+{
+    "model": "store.product",
+    "pk": 8,
+    "fields": {
+        "category": 2,
+        "name": "Perfume",
+        "description": "Long-Lasting Fragrance For Daily Wear",
+        "price": "500.00",
+        "image": "products/images_4.jpeg",
+        "created_at": "2026-07-04T10:15:02.075Z"
+    }
+},
+{
+    "model": "store.product",
+    "pk": 9,
+    "fields": {
+        "category": 2,
+        "name": "Mirror",
+        "description": "Elegant Decorative Mirror For Modern Interiors",
+        "price": "599.00",
+        "image": "products/images_5.jpeg",
+        "created_at": "2026-07-04T18:40:38.707Z"
+    }
+},
+{
+    "model": "store.product",
+    "pk": 10,
+    "fields": {
+        "category": 2,
+        "name": "FlowerVase",
+        "description": "Beautiful Vase To Enhance Your Home Decor",
+        "price": "400.00",
+        "image": "products/images_7.jpeg",
+        "created_at": "2026-07-05T15:37:16.611Z"
+    }
+},
+{
+    "model": "store.product",
+    "pk": 11,
+    "fields": {
+        "category": 2,
+        "name": "Bloom",
+        "description": "Refreshing Floral Fragrance With A Lasting Scent",
+        "price": "645.00",
+        "image": "products/images_6.jpeg",
+        "created_at": "2026-07-05T15:38:35.577Z"
+    }
+},
+{
+    "model": "store.product",
+    "pk": 12,
+    "fields": {
+        "category": 2,
+        "name": "Hanging Lamp Shades",
+        "description": "Stylish Hanging Lamps For Modern Homes",
+        "price": "999.00",
+        "image": "products/hanging_lamp_set.jpeg",
+        "created_at": "2026-07-05T15:39:29.355Z"
+    }
+},
+{
+    "model": "store.product",
+    "pk": 13,
+    "fields": {
+        "category": 2,
+        "name": "PhotoWall",
+        "description": "Creative Wall Decor To Showcase Your Memories",
+        "price": "399.00",
+        "image": "products/Photo_wall.jpeg",
+        "created_at": "2026-07-05T15:40:02.617Z"
+    }
+}
+]

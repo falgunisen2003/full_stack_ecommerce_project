@@ -13,22 +13,27 @@ interface ProductCardProps {
   product: Product;
 }
 
-const BASEURL = (import.meta.env.VITE_DJANGO_BASE_URL as string) || "http://127.0.0.1:8000";
+const BASEURL = "http://3.6.92.227";
+
+
 
 function ProductCard({ product }: ProductCardProps): React.JSX.Element {
   return (
     <Link to={`/product/${product.id}`} className="block h-full">
-      {/* Reduced padding down to p-3 to keep elements extremely compact */}
       <div className="bg-white rounded-xl shadow-sm p-3 hover:shadow-md transition h-full flex flex-col justify-between cursor-pointer border border-gray-100">
         <div>
           {product.image ? (
             <img
-              src={product.image.startsWith("http") ? product.image : `${BASEURL}${product.image}`}
+              src={
+                product.image.startsWith("http")
+                  ? product.image
+                  : `${BASEURL}/${product.image}`
+              }
               alt={product.name}
-              // Reduced image height from h-56 to h-36 to maximize single-page vertical space
               className="w-full h-36 object-cover rounded-lg mb-2"
               onError={(e) => {
-                e.currentTarget.src = "https://placehold.co/400x300?text=No+Image";
+                e.currentTarget.src =
+                  "https://placehold.co/400x300?text=No+Image";
               }}
             />
           ) : (
@@ -42,13 +47,11 @@ function ProductCard({ product }: ProductCardProps): React.JSX.Element {
           </h2>
 
           <p className="text-sm text-gray-500 line-clamp-2 min-h-10">
-          {product.description}
+            {product.description}
           </p>
         </div>
 
-        <p className="font-bold text-blue-600 mt-2 text-lg">
-          ₹{product.price}
-        </p>
+        <p className="font-bold text-blue-600 mt-2 text-lg">₹{product.price}</p>
       </div>
     </Link>
   );
