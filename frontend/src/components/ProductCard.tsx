@@ -13,11 +13,10 @@ interface ProductCardProps {
   product: Product;
 }
 
-const BASEURL = "http://3.6.92.227";
-
-
-
 function ProductCard({ product }: ProductCardProps): React.JSX.Element {
+  // Netlify runtime environment variable use hobe ekhon hardcoded IP-r bodole
+  const baseUrl = import.meta.env.VITE_DJANGO_BASE_URL || "";
+
   return (
     <Link to={`/product/${product.id}`} className="block h-full">
       <div className="bg-white rounded-xl shadow-sm p-3 hover:shadow-md transition h-full flex flex-col justify-between cursor-pointer border border-gray-100">
@@ -27,7 +26,7 @@ function ProductCard({ product }: ProductCardProps): React.JSX.Element {
               src={
                 product.image.startsWith("http")
                   ? product.image
-                  : `${BASEURL}/${product.image}`
+                  : `${baseUrl}${product.image}`
               }
               alt={product.name}
               className="w-full h-36 object-cover rounded-lg mb-2"
