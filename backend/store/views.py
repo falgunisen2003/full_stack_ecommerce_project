@@ -2,25 +2,28 @@ from rest_framework.decorators import api_view, permission_classes # type: ignor
 from rest_framework.permissions import IsAuthenticated, AllowAny # type: ignore[import]
 from rest_framework.response import Response # type: ignore[import]
 from rest_framework import status # type: ignore[import]
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404 # type: ignore[import]
 from .models import Product, CartItem, Category, Cart, Order, OrderItem
 from .serializers import CartItemSerializer, ProductSerializer, CategorySerializer, CartSerializer, RegisterSerializer, UserSerializer
 
 # --- PRODUCT & CATEGORY ENDPOINTS (PUBLIC) ---
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def get_products(request):
     products = Product.objects.all()
     serializer = ProductSerializer(products, many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def get_product(request, id):
     product = get_object_or_404(Product, id=id)
     serializer = ProductSerializer(product)
     return Response(serializer.data)
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def get_categories(request):
     categories = Category.objects.all()
     serializer = CategorySerializer(categories, many=True)

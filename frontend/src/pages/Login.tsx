@@ -1,14 +1,17 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { saveToken } from "../utils/auth";
+import { useCart } from "../context/CartContext"; // Access our context hook
 
 export default function Login(): React.JSX.Element {
   const BASE = (import.meta.env.VITE_DJANGO_BASE_URL as string) || "http://127.0.0.1:8000";
   
   const [form, setForm] = useState({ username: "", password: "" });
   const [msg, setMsg] = useState<string>("");
+  
   const navigate = useNavigate();
-  const location = useLocation(); // Hook to access incoming navigation state
+  const location = useLocation();
+  const { fetchCart } = useCart(); // Extract cart re-hydration function
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -19,6 +22,9 @@ export default function Login(): React.JSX.Element {
     setMsg("");
     
     try {
+      // Clear out any old local storage data left behind before requesting new credentials
+      localStorage.clear();
+
       const response = await fetch(`${BASE}/api/token/`, {
         method: "POST",
         headers: {
@@ -31,11 +37,13 @@ export default function Login(): React.JSX.Element {
 
       if (response.ok) {
         saveToken(data); 
+        
+        // CRUCIAL: Re-fetch cart immediately with the fresh token context before redirecting
+        await fetchCart();
+
         setMsg("Login successful! Redirecting...");
         
         setTimeout(() => {
-          // If the user came from a specific page (like ProductDetails), send them back there.
-          // Otherwise, fall back to the home page ('/').
           const from = location.state?.from?.pathname || "/";
           navigate(from, { replace: true });
         }, 800);
@@ -54,7 +62,6 @@ export default function Login(): React.JSX.Element {
         <h2 className="text-3xl font-bold mb-6 text-gray-900">Login</h2>
         
         <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off">
-          {/* FAKE INPUTS: These trap the browser's automatic autofill trigger */}
           <input type="text" name="prevent_autofill" style={{ display: "none" }} aria-hidden="true" tabIndex={-1} />
           <input type="password" name="prevent_autofill_pwd" style={{ display: "none" }} aria-hidden="true" tabIndex={-1} />
 
@@ -65,8 +72,8 @@ export default function Login(): React.JSX.Element {
             value={form.username}
             placeholder="Username"
             required
-            autoComplete="new-password" // Disables standard credential matching loops
-            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+            autoComplete="new-password"
+            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-black"
           />
           
           <input
@@ -77,7 +84,7 @@ export default function Login(): React.JSX.Element {
             placeholder="Password"
             required
             autoComplete="new-password"
-            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-black"
           />
           
           <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition">

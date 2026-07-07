@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, type ReactNode } from "react";
-import { authFetch } from "../utils/auth"; 
+import { authFetch, getAccessToken } from "../utils/auth"; 
 
-// Base Product definition
 export interface Product {
   id: string | number;
   name: string;
@@ -9,7 +8,6 @@ export interface Product {
   image?: string | null;
 }
 
-// Updated CartItem interface matching Django's response keys
 export interface CartItem {
   id: string | number;         
   product: number;             
@@ -22,6 +20,7 @@ export interface CartItem {
 interface CartContextType {
   cartItems: CartItem[];
   total: number; 
+  fetchCart: () => Promise<void>; // Exposed to trigger updates manually on login
   addToCart: (product: Product) => void;
   removeFromCart: (itemId: string | number) => void;
   updateQuantity: (itemId: string | number, quantity: number) => void;
@@ -37,16 +36,28 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   // Fetch cart data from Django API (GET)
   const fetchCart = async () => {
+    // GUARD: If no access token exists locally, do not fetch from server
+    if (!getAccessToken()) {
+      setCartItems([]);
+      setTotal(0);
+      return;
+    }
+
     try {
       const res = await authFetch(`${BASEURL}/api/cart/`);
       
-      // CRITICAL GUARD: Handles failed/unauthorized requests gracefully 
+      // If server explicitly states token is unauthorized, clear front-end state
+      if (res.status === 401) {
+        setCartItems([]);
+        setTotal(0);
+        return;
+      }
+
       if (!res.ok) {
         throw new Error("Failed to fetch cart data");
       }
 
       const data = await res.json();
-      
       setCartItems(data.items || []);
       setTotal(Number(data.total) || 0);
     } catch (error) {
@@ -58,7 +69,6 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     fetchCart();
   }, []);
 
-  // Add a product to the cart (POST)
   const addToCart = async (product: Product) => {
     try {
       const response = await authFetch(`${BASEURL}/api/cart/add/`, {
@@ -73,7 +83,6 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  // Remove item completely from backend cart (POST)
   const removeFromCart = async (itemId: string | number) => {
     try {
       const response = await authFetch(`${BASEURL}/api/cart/remove/`, {
@@ -88,7 +97,6 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  // Update item quantity on the backend (POST)
   const updateQuantity = async (itemId: string | number, quantity: number) => {
     if (quantity < 1) {
       await removeFromCart(itemId);
@@ -108,7 +116,6 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  // Clear all items from the cart (POST)
   const clearCart = async () => {
     try {
       setCartItems([]);
@@ -128,7 +135,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   return (
-    <CartContext.Provider value={{ cartItems, total, addToCart, removeFromCart, updateQuantity, clearCart }}>
+    <CartContext.Provider value={{ cartItems, total, fetchCart, addToCart, removeFromCart, updateQuantity, clearCart }}>
       {children}
     </CartContext.Provider>
   );
