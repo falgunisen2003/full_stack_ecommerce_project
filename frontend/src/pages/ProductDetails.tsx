@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { useCart, type Product } from "../context/CartContext";
 
-// Interface configured to match Context Product properties
 interface APIProduct extends Product {
   description: string;
 }
@@ -11,15 +10,13 @@ const BASEURL = (import.meta.env.VITE_DJANGO_BASE_URL as string) || "";
 
 function ProductDetails(): React.JSX.Element {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
 
   const [product, setProduct] = useState<APIProduct | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  
-  // 1. Added local state for the automatic message status
   const [cartStatus, setCartStatus] = useState<string | null>(null);
 
-  // Consume the cart context hook
   const { addToCart } = useCart();
 
   useEffect(() => {
@@ -43,21 +40,18 @@ function ProductDetails(): React.JSX.Element {
       });
   }, [id]);
 
-  // Securely handles cart actions with authentication guards
   const handleAddToCart = (): void => {
     if (!product) return;
 
+    // Login check using useNavigate instead of window.location.href
     if (!localStorage.getItem("access_token")) {
-      window.location.href = "/login";
+      navigate("/login");
       return;
     }
 
     addToCart(product);
-
-    // 2. Replaced alert() with an automatic status notification
     setCartStatus("Product added to cart! 🛒");
 
-    // 3. Automatically hide the success message after 2 seconds
     setTimeout(() => {
       setCartStatus(null);
     }, 2000);
@@ -135,7 +129,6 @@ function ProductDetails(): React.JSX.Element {
                 Add to Cart 🛒
               </button>
 
-              {/* 4. Smooth inline message rendering underneath button */}
               {cartStatus && (
                 <div className="text-sm font-semibold text-green-600 bg-green-50 p-2 rounded-lg border border-green-200 mt-2 transition-all duration-300 ease-in-out">
                   {cartStatus}
