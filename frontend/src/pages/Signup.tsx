@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function Signup(): React.JSX.Element {
   const BASE = (import.meta.env.VITE_DJANGO_BASE_URL as string) || "http://127.0.0.1:8000";
@@ -7,6 +7,7 @@ export default function Signup(): React.JSX.Element {
   const [form, setForm] = useState({ username: "", email: "", password: "", password2: "" });
   const [msg, setMsg] = useState<string>("");
   const nav = useNavigate();
+  const location = useLocation(); // Track the incoming routing state from ProductDetails
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -30,7 +31,8 @@ export default function Signup(): React.JSX.Element {
       if (res.ok) {
         setMsg("Account created. Redirecting to login...");
         setTimeout(() => {
-          nav("/login");
+          // Forward location.state (holding the product details URL) to the Login page
+          nav("/login", { state: location.state });
         }, 1200);
       } else {
         setMsg(data.username || data.password || JSON.stringify(data));

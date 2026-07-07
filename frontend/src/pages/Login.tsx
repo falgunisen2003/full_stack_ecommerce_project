@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { saveToken } from "../utils/auth";
 
 export default function Login(): React.JSX.Element {
@@ -8,6 +8,7 @@ export default function Login(): React.JSX.Element {
   const [form, setForm] = useState({ username: "", password: "" });
   const [msg, setMsg] = useState<string>("");
   const navigate = useNavigate();
+  const location = useLocation(); // Hook to access incoming navigation state
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -33,7 +34,10 @@ export default function Login(): React.JSX.Element {
         setMsg("Login successful! Redirecting...");
         
         setTimeout(() => {
-          navigate("/");
+          // If the user came from a specific page (like ProductDetails), send them back there.
+          // Otherwise, fall back to the home page ('/').
+          const from = location.state?.from?.pathname || "/";
+          navigate(from, { replace: true });
         }, 800);
       } else {
         setMsg(data.detail || "Login failed. Please try again.");
@@ -89,9 +93,13 @@ export default function Login(): React.JSX.Element {
         
         <div className="mt-4 text-sm text-gray-600 text-center">
           Don't have an account?{" "}
-          <a href="/signup" className="text-blue-600 hover:underline font-medium">
+          <button 
+            type="button"
+            onClick={() => navigate("/signup", { state: location.state })} 
+            className="text-blue-600 hover:underline font-medium focus:outline-none"
+          >
             Sign up
-          </a>
+          </button>
         </div>
       </div>
     </div>

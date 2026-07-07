@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate, useLocation } from "react-router-dom";
 import { useCart, type Product } from "../context/CartContext";
 
 interface APIProduct extends Product {
@@ -11,6 +11,7 @@ const BASEURL = (import.meta.env.VITE_DJANGO_BASE_URL as string) || "";
 function ProductDetails(): React.JSX.Element {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation(); // Added to track current page location
 
   const [product, setProduct] = useState<APIProduct | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -43,9 +44,10 @@ function ProductDetails(): React.JSX.Element {
   const handleAddToCart = (): void => {
     if (!product) return;
 
-    // Login check using useNavigate instead of window.location.href
+    // Login check using useNavigate with location state forwarding
     if (!localStorage.getItem("access_token")) {
-      navigate("/login");
+      // Passing the current location state so login/signup can redirect back here
+      navigate("/login", { state: { from: location } });
       return;
     }
 
